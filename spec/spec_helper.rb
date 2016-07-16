@@ -18,6 +18,7 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require './lib/product'
+require './lib/checkout'
 
 require 'coveralls'
 Coveralls.wear!

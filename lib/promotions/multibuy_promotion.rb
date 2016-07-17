@@ -11,7 +11,7 @@ class MultibuyPromotion
 
 	def apply basket
 		items = basket.select { |item| item.code == @code }
-		return items.count >= @quantity ? (@discount * items.count) : 0
+		return items.count >= @quantity ? (@discount * items.count).round(2) : 0
 	end
 
 end

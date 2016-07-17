@@ -19,6 +19,7 @@
 
 require './lib/product'
 require './lib/checkout'
+require './lib/multibuy_promotion'
 
 require 'coveralls'
 Coveralls.wear!

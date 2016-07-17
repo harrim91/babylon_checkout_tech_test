@@ -1,14 +1,7 @@
 describe MultibuyPromotion do
-	subject(:promotion) { described_class.new 001, 2, 0.75, 2}
-	let(:heart) { double :heart, code: 001 }
-	let(:shirt) { double :shirt, code: 002 }
-
-	describe '#initialize' do
-		subject(:promotion) { described_class.new 001, 2, 0.75 }
-		it 'has an optional priority argument which defaults to 0' do
-			expect(promotion.priority).to eq 0
-		end
-	end
+	subject(:promotion) { described_class.new '001', 2, 0.75, 2}
+	let(:heart) { double :heart, code: '001' }
+	let(:shirt) { double :shirt, code: '002' }
 
 	describe '#priority' do
 		it 'returns the given priority' do

@@ -1,5 +1,6 @@
 class Checkout
-	def initialize
+	def initialize promo_rules = []
+		@promo_rules = promo_rules.sort { |x, y| x.priority <=> y.priority }
 		@basket = []
 	end
 
@@ -8,15 +9,10 @@ class Checkout
 	end
 
 	def total
-		return 0 if @basket.empty?
-		total = @basket.inject(0) { |sum, product| sum + product.price }
-		total -= (0.75 * heart_count) if heart_count >= 2
-		return total >= 60 ? (total * 0.9).round(2) : total
+		basket_value = @basket.inject(0) { |sum, product| sum + product.price }
+		discount = @promo_rules.inject(0) { |sum, rule| sum + rule.apply(@basket) }
+		total = (basket_value - discount).round 2
+		return total > 0 ? total : 0
 	end
 
-	private
-	def heart_count
-		hearts = @basket.select { |item| item.code == 001 }
-		return hearts.size
-	end
 end

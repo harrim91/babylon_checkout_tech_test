@@ -1,8 +1,11 @@
 describe 'Checkout' do
-	let(:checkout) { Checkout.new }
-	let(:lavender_heart) { Product.new 001, 'Lavender heart', 9.25 }
-	let(:cufflinks) { Product.new 002, 'Personalised cufflinks', 45.00 }
-	let(:tshirt) { Product.new 003, 'Lavender heart', 19.95 }
+	let(:lavender_heart) { Product.new '001', 'Lavender heart', 9.25 }
+	let(:cufflinks) { Product.new '002', 'Personalised cufflinks', 45.00 }
+	let(:tshirt) { Product.new '003', 'Kids T-shirt', 19.95 }
+	let(:heart_promo) { MultibuyPromotion.new '001', 2, 0.75, 1 }
+	let(:min_spend_promo) { MinimumSpendPromotion.new 60, 10, 2 }
+	let(:promotional_rules) { [heart_promo, min_spend_promo] }
+	let(:checkout) { Checkout.new promotional_rules }
 
 	context 'checking out with no promotion applied' do
 		it 'adds the totals correctly' do

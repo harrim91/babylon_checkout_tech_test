@@ -1,6 +1,6 @@
 class MultibuyPromotion
 
-	def initialize code, quantity, discount, priority=0
+	def initialize code, quantity, discount, priority
 		@code = code
 		@quantity = quantity
 		@discount = discount

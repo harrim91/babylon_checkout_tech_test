@@ -1,47 +1,47 @@
 describe Checkout do
-	subject(:checkout) { described_class.new }
-	let(:heart) { double :heart, code: 001, price: 9.25 }
-	let(:cufflinks) { double :cufflinks, code: 002, price: 45.00 }
-	let(:shirt) { double :shirt, code: 003, price: 19.95 }
+	let(:heart) { double :heart, price: 9.25 }
+	let(:cufflinks) { double :cufflinks, price: 45.00 }
+	let(:shirt) { double :shirt, price: 19.95 }
+	let(:promo_1) { double :promotion, priority: 1, apply: 10 }
+	let(:promo_2) { double :promotion, priority: 2, apply: 5 }
 
-	describe '#total' do
-		it 'returns 0 if nothing has been scanned' do
-			expect(checkout.total).to eq 0.00
-		end
-		
-		it 'returns the value of the scanned items' do
-			checkout.scan heart
-			expect(checkout.total).to eq 9.25
-		end
-
-		context 'scanning two hearts' do
-			before { 2.times { checkout.scan heart } }
-			it 'reduces the price to 8.50' do
-				expect(checkout.total).to eq 17.00
+	context 'no promotional rules loaded' do
+		subject(:checkout) { described_class.new }
+		describe '#total' do
+			context 'no items have been scanned' do
+				it 'returns 0' do
+					expect(checkout.total).to eq 0
+				end
 			end
-		end
-
-		context 'total is greater than 60' do
-			before do
-				checkout.scan heart
-				checkout.scan cufflinks
-				checkout.scan shirt				
-			end
-			it 'applies a 10% discount' do
-				expect(checkout.total).to eq 66.78
+			context 'items have been scanned' do
+				before { checkout.scan shirt }
+				it 'returns the value of the scanned items' do
+					expect(checkout.total).to eq 19.95
+				end
 			end
 		end
 	end
 
-	context 'two hearts and more than 60 total' do
-		before do
-			checkout.scan heart
-			checkout.scan cufflinks
-			checkout.scan heart
-			checkout.scan shirt	
-		end
-		it 'applies the hearts discount before the 10% discount' do
-			expect(checkout.total).to equal 73.76
+	context 'promotional rules are loaded' do
+		subject(:checkout) { described_class.new [promo_1, promo_2] }
+		describe '#total' do
+			context 'basket is empty' do
+				it 'returns zero' do
+					expect(checkout.total).to eq 0
+				end
+			end
+			context 'discount value greater than basket total' do
+				before { checkout.scan heart }
+				it 'returns zero' do
+					expect(checkout.total).to eq 0
+				end
+			end
+			context 'basket value greater than discount value' do
+				before { checkout.scan cufflinks }
+				it 'returns the basket value with all discounts subtracted' do
+					expect(checkout.total).to eq 30.00
+				end
+			end
 		end
 	end
 

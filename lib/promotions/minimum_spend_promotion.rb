@@ -1,5 +1,5 @@
 class MinimumSpendPromotion
-	def initialize minimum_spend, discount, priority=0
+	def initialize minimum_spend, discount, priority
 		@minimum_spend = minimum_spend
 		@discount = discount
 		@priority = priority

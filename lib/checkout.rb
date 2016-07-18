@@ -1,18 +1,21 @@
 class Checkout
-	def initialize promo_rules = []
-		@promo_rules = promo_rules.sort { |x, y| x.priority <=> y.priority }
-		@basket = []
+	def initialize promotions = [], basket_klass = Basket
+		@promotions = promotions.sort { |x, y| x.priority <=> y.priority }
+		@basket = basket_klass.new
 	end
 
 	def scan product
-		@basket << product
+		@basket.add product
 	end
 
 	def total
-		basket_value = @basket.inject(0) { |sum, product| sum + product.price }
-		discount = @promo_rules.inject(0) { |sum, rule| sum + rule.apply(@basket) }
-		total = (basket_value - discount).round 2
-		return total > 0 ? total : 0
+		apply_discounts
+		@basket.total.round 2
+	end
+
+	private
+	def apply_discounts
+		@promotions.each { |rule| rule.apply(@basket) }
 	end
 
 end

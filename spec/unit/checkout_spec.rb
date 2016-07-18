@@ -1,49 +1,40 @@
 describe Checkout do
-	let(:heart) { double :heart, price: 9.25 }
-	let(:cufflinks) { double :cufflinks, price: 45.00 }
+	let(:basket) { double :basket, total: 10}
+	let(:basket_klass) { double :basket_klass, new: basket }
 	let(:shirt) { double :shirt, price: 19.95 }
-	let(:promo_1) { double :promotion, priority: 1, apply: 10 }
-	let(:promo_2) { double :promotion, priority: 2, apply: 5 }
+	let(:promo_1) { double :promotion, priority: 1, apply: nil }
+	let(:promo_2) { double :promotion, priority: 2, apply: nil }
+	let(:promo_rules) { [promo_1, promo_2] }
+	subject(:checkout) { described_class.new promo_rules, basket_klass }
 
-	context 'no promotional rules loaded' do
-		subject(:checkout) { described_class.new }
-		describe '#total' do
-			context 'no items have been scanned' do
-				it 'returns 0' do
-					expect(checkout.total).to eq 0
-				end
-			end
-			context 'items have been scanned' do
-				before { checkout.scan shirt }
-				it 'returns the value of the scanned items' do
-					expect(checkout.total).to eq 19.95
-				end
-			end
+	describe '#initialize' do
+		subject(:checkout_klass) { described_class }
+		after(:each) { checkout_klass.new promo_rules }
+		it 'sorts the promotional rules' do
+			expect(promo_rules).to receive(:sort)
+		end
+		it 'checks the priority of the promo rules' do
+			expect(promo_1).to receive(:priority)
 		end
 	end
 
-	context 'promotional rules are loaded' do
-		subject(:checkout) { described_class.new [promo_1, promo_2] }
-		describe '#total' do
-			context 'basket is empty' do
-				it 'returns zero' do
-					expect(checkout.total).to eq 0
-				end
-			end
-			context 'discount value greater than basket total' do
-				before { checkout.scan heart }
-				it 'returns zero' do
-					expect(checkout.total).to eq 0
-				end
-			end
-			context 'basket value greater than discount value' do
-				before { checkout.scan cufflinks }
-				it 'returns the basket value with all discounts subtracted' do
-					expect(checkout.total).to eq 30.00
-				end
-			end
+	describe '#scan' do
+		it 'adds the item to the basket' do
+			expect(basket).to receive(:add).with shirt
+			checkout.scan shirt
 		end
 	end
 
+	describe 'total' do
+		it 'applies discounts' do
+			promo_rules.each do |promotion|
+				expect(promotion).to receive(:apply).with basket
+				checkout.total
+			end
+		end
+		it 'returns the basket total' do
+			expect(checkout.total).to eq 10.00
+		end
+	end
 
 end

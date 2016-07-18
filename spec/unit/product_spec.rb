@@ -1,5 +1,5 @@
 describe Product do
-	subject(:product) { described_class.new '001', 'Lavender heart', 9 }
+	subject(:product) { described_class.new '001', 'Lavender heart', 9.00 }
 
 	describe '#code' do
 		it 'returns the product code' do
@@ -14,7 +14,7 @@ describe Product do
 	end
 
 	describe '#price' do
-		it 'returns the product price to 2 decimals' do
+		it 'returns the product price' do
 			expect(product.price).to eq 9.00
 		end
 	end

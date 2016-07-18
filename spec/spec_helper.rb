@@ -18,9 +18,11 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require './lib/product'
-require './lib/checkout'
+require './lib/discount'
+require './lib/basket'
 require './lib/promotions/multibuy_promotion'
 require './lib/promotions/minimum_spend_promotion'
+require './lib/checkout'
 
 require 'coveralls'
 Coveralls.wear!

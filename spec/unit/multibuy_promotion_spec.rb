@@ -1,25 +1,28 @@
 describe MultibuyPromotion do
-	subject(:promotion) { described_class.new '001', 2, 0.75, 2}
-	let(:heart) { double :heart, code: '001' }
-	let(:shirt) { double :shirt, code: '002' }
+	let(:discount) { double :discount }
+	let(:discount_klass) { double :discount_klass, new: discount }
+	let(:basket) { double :basket }
+	subject(:promotion) { described_class.new '001', 2, 0.75, 3, discount_klass }
 
 	describe '#priority' do
 		it 'returns the given priority' do
-			expect(promotion.priority).to eq 2
+			expect(promotion.priority).to eq 3
 		end
 	end
 
 	describe '#apply' do
 		context 'basket does not qualify for discount' do
-			let(:basket) { [heart, shirt] }
-			it 'returns 0' do
-				expect(promotion.apply basket).to eq 0
+			it 'does not add a discount to the basket' do
+				allow(basket).to receive(:quantity_of).with('001').and_return 1
+				expect(basket).not_to receive(:add)
+				promotion.apply basket
 			end
 		end
 		context 'basket qualifies for discount' do
-			let(:basket) { [heart, shirt, heart] }
-			it 'returns the correct discount amount' do
-				expect(promotion.apply basket).to eq 1.50
+			it 'add a discount to the basket' do
+				allow(basket).to receive(:quantity_of).with('001').and_return 2
+				expect(basket).to receive(:add).with discount
+				promotion.apply basket
 			end
 		end
 	end

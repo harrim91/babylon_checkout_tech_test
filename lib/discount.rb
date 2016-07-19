@@ -5,7 +5,7 @@ class Discount
 	def initialize name, price
 		@code = CODE
 		@name = name
-		@price = -price
+		@price = -(price.to_f)
 	end
 
 	attr_reader :code, :name, :price
